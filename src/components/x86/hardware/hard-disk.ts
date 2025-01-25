@@ -12,7 +12,7 @@ export class HardDisk {
   private _hardDiskSpec: {
     heads: number;
     tracksPerSurface: number;
-    sectorsPerTrack: number; //
+    sectorsPerTrack: number;
     bytesPerSector: number;
     rpm: number;
   };
@@ -39,14 +39,12 @@ export class HardDisk {
     };
 
     // Allocate disk memory based on calculated disk capacity
-    this._diskBuffer = new ArrayBuffer(
-      this.getDiskCapacity({
-        heads: this._hardDiskSpec.heads,
-        tracksPerSurface: this._hardDiskSpec.tracksPerSurface,
-        sectorsPerTrack: this._hardDiskSpec.sectorsPerTrack,
-        bytesPerSector: this._hardDiskSpec.bytesPerSector,
-      })
-    );
+    this._diskBuffer = this.getDiskCapacity({
+      heads: this._hardDiskSpec.heads,
+      tracksPerSurface: this._hardDiskSpec.tracksPerSurface,
+      sectorsPerTrack: this._hardDiskSpec.sectorsPerTrack,
+      bytesPerSector: this._hardDiskSpec.bytesPerSector,
+    });
 
     // Create a byte-level view of the disk buffer
     this._diskView = new Uint8Array(this._diskBuffer);
@@ -65,18 +63,20 @@ export class HardDisk {
     tracksPerSurface: number;
     sectorsPerTrack: number;
     bytesPerSector: number;
-  }): number {
-    return heads * tracksPerSurface * sectorsPerTrack * bytesPerSector;
+  }) {
+    return new ArrayBuffer(
+      heads * tracksPerSurface * sectorsPerTrack * bytesPerSector
+    );
   }
 
   /**
    * Calculates the average rotational latency in milliseconds.
    * Average rotational latency is half the time of one full rotation.
    */
-  private getAverageRotationalLatency(): number {
-    const rps = this._hardDiskSpec.rpm / 60; // Rotations per second
-    const rotationalLatency = 1 / rps; // Time for one full rotation
-    return rotationalLatency / 2; // Average latency (half rotation)
+  private getAverageRotationalLatency() {
+    const rps = this._hardDiskSpec.rpm / 60;
+    const rotationalLatency = 1 / rps;
+    return rotationalLatency / 2;
   }
 
   /**
@@ -152,7 +152,7 @@ export class HardDisk {
     sector: number;
     data: Uint8Array;
   }): Promise<void> {
-    await this.timeCostToOperate(); // Simulate latency
+    await this.timeCostToOperate();
 
     const offset = this.getSectorOffect({ head, track, sector });
 
