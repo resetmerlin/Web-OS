@@ -1,0 +1,12 @@
+export const DEFAULT_HARD_DISK_SPEC = {
+  HEADS: 4,
+  TRACKS_PER_SURFACE: 64,
+  SECTORS_PER_TRACK: 128,
+  BYTES_PER_SECTOR: 512,
+  RPM: 3600,
+} as const;
+
+export const DEFAULT_VGA_HARDWARE_SPEC = {
+  ROWS: 25,
+  COLUMNS: 80,
+} as const;
